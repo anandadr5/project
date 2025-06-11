@@ -16,7 +16,21 @@
         background-color: #ce1e10;
         color: white;
         text-align: center;
-        padding: 30px;
+        padding: 10px 20px; /* Adjusted padding to match the reference */
+        display: flex; /* Added flexbox for logo and title alignment */
+        align-items: center; /* Vertically align items */
+        justify-content: center; /* Center content horizontally */
+        position: relative; /* For absolute positioning of the logo if needed */
+      }
+
+      header img {
+        width: 80px; /* Set width as per the reference */
+        height: auto; /* Maintain aspect ratio */
+        margin-right: 20px; /* Space between logo and title */
+        position: absolute; /* Position the logo */
+        left: 20px; /* Align logo to the left */
+        top: 50%; /* Center vertically */
+        transform: translateY(-50%); /* Adjust for perfect vertical centering */
       }
 
       header h1 {
@@ -57,6 +71,7 @@
   </head>
   <body>
     <header>
+      <img src="Assets\Alfamart-Emblem.png" alt="Alfamart Logo" />
       <h1>Formulir Pengukuran & Rencana Anggaran</h1>
     </header>
 
