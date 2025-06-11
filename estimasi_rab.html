@@ -149,7 +149,7 @@
       <a href="landing_page.html" class="back-btn"> ← Kembali ke Beranda </a>
     </div>
 
-    <div id="message" style="display: none;"></div>
+    <div id="message" style="display: none"></div>
 
     <script>
       const form = document.getElementById("form");
@@ -191,9 +191,8 @@
           const data = await response.json();
 
           if (data.status === "success") {
-            messageDiv.textContent =
-              data.message || "Data berhasil terkirim!";
-            messageDiv.style.backgroundColor = "#28a745"; // Green for success
+            messageDiv.textContent = data.message || "Data berhasil terkirim!";
+            messageDiv.style.backgroundColor = "#28a745";
             messageDiv.style.color = "white";
             form.reset();
           } else {
@@ -202,11 +201,10 @@
         } catch (error) {
           console.error("Error:", error);
           messageDiv.textContent = "Error: " + error.message;
-          messageDiv.style.backgroundColor = "#ce1e10"; // Red for error
+          messageDiv.style.backgroundColor = "#ce1e10";
           messageDiv.style.color = "white";
         } finally {
           submitButton.disabled = false;
-          // submitButton.classList.remove("is-loading"); // Remove loading indicator
 
           setTimeout(() => {
             messageDiv.textContent = "";
