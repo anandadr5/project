@@ -78,64 +78,14 @@
       cursor: pointer;
     }
 
-    .popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #ffffff;
-      padding: 40px;
-      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-      border-radius: 15px;
-      text-align: center;
-      z-index: 1000;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    .popup.show {
-      display: block;
-    }
-
-    .popup p {
-      font-size: 22px;
+    /* Styles for the message display area */
+    #message {
+      margin: 20px auto; /* Centers the message box */
+      max-width: 800px; /* Matches the form width for alignment */
+      padding: 10px;
+      border-radius: 4px;
       font-weight: bold;
-      color: #28a745;
-      margin-bottom: 15px;
-    }
-
-    .popup::before {
-      content: "✔";
-      font-size: 40px;
-      color: #28a745;
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .popup button {
-      background-color: #ce1e10;
-      color: white;
-      padding: 10px 25px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .popup button:hover {
-      background-color: #d50e08;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -60%);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-      }
+      text-align: center;
     }
   </style>
   <body>
@@ -144,52 +94,52 @@
     </header>
 
     <div class="container">
-      <form id="estimasi-form" class="form-container">
+      <form id="form" class="form-container">
         <label for="lokasi">Lokasi:</label>
         <input
           type="text"
           id="lokasi"
-          name="lokasi"
+          name="Lokasi"
           placeholder="Masukan Lokasi Disini"
           required
         />
 
         <label for="proyek">Proyek:</label>
-        <select name="proyek" id="proyek" required>
+        <select name="Proyek" id="proyek" required>
           <option value="">-- Pilih Jenis Proyek --</option>
-          <option value="reguler">Alfamart Reguler</option>
-          <option value="franchise">Franchise</option>
+          <option value="Alfamart Reguler">Alfamart Reguler</option>
+          <option value="Franchise">Franchise</option>
         </select>
 
         <label for="lingkup_pekerjaan">Lingkup Pekerjaan:</label>
-        <select name="lingkup_pekerjaan" id="lingkup_pekerjaan">
+        <select name="Lingkup Pekerjaan" id="lingkup_pekerjaan">
           <option value="">-- Pilih Lingkup Pekerjaan --</option>
-          <option value="sipil">Sipil</option>
-          <option value="me">Me</option>
+          <option value="Sipil">Sipil</option>
+          <option value="ME">Me</option>
         </select>
 
         <label for="luas_bangunan">Luas Bangunan:</label>
         <input
           type="text"
           id="luas_bangunan"
-          name="luas_bangunan"
+          name="Luas Bangunan"
           placeholder="Masukan Luas Bangunan"
           required
         />
 
         <label for="tanggal">Tanggal:</label>
-        <input type="date" id="tanggal" name="tanggal" required />
+        <input type="date" id="tanggal" name="Tanggal" required />
 
         <label for="waktu_pelaksanaan">Waktu Pelaksanaan::</label>
         <input
           type="date"
           id="waktu_pelaksanaan"
-          name="waktu_pelaksanaan"
+          name="Waktu Pelaksanaan"
           required
         />
 
         <div class="button-group">
-          <button type="submit">Kirim</button>
+          <button type="submit" id="submit-button">Kirim</button>
           <button type="reset">Ulang</button>
         </div>
       </form>
@@ -197,21 +147,77 @@
       <a href="landing_page.html" class="back-btn"> ← Kembali ke Beranda </a>
     </div>
 
-    <div class="popup" id="popup">
-      <p>Data Berhasil Terkirim</p>
-      <button onclick="closePopup()">Tutup</button>
-    </div>
+    <div id="message" style="display: none;"></div>
 
     <script>
-      function handleSubmit(event) {
-        event.preventDefault();
-        document.getElementById("popup").classList.add("show");
-      }
+      const form = document.getElementById("form");
+      const submitButton = document.getElementById("submit-button");
+      const messageDiv = document.getElementById("message");
 
-      function closePopup() {
-        document.getElementById("popup").classList.remove("show");
-        document.getElementById("survey-form").reset();
-      }
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        messageDiv.textContent = "Mengirim data...";
+        messageDiv.style.display = "block";
+        messageDiv.style.backgroundColor = "beige";
+        messageDiv.style.color = "black";
+        submitButton.disabled = true;
+        // You can add a class for loading indicator here if you have one
+        // submitButton.classList.add("is-loading");
+
+        try {
+          const formData = new FormData(this);
+          const formDataObj = {};
+
+          for (let [key, value] of formData.entries()) {
+            formDataObj[key] = value;
+          }
+
+          // !!! IMPORTANT: Replace with your deployed Google Apps Script Web App URL !!!
+          const scriptURL =
+            "https://script.google.com/macros/s/AKfycbwukv_AyjvIZ9cIuMbfIHYhudObu5tRVXuMhp4J4onECcSHiDszNNH7WEfvCWHoR_2Ohg/exec"; // <--- Replace this URL
+
+          const response = await fetch(scriptURL, {
+            redirect: "follow",
+            method: "POST",
+            body: JSON.stringify(formDataObj),
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8",
+            },
+          });
+
+          const data = await response.json();
+
+          if (data.status === "success") {
+            messageDiv.textContent =
+              data.message || "Data berhasil terkirim!";
+            messageDiv.style.backgroundColor = "#28a745"; // Green for success
+            messageDiv.style.color = "white";
+            form.reset();
+          } else {
+            throw new Error(data.message || "Pengiriman data gagal.");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          messageDiv.textContent = "Error: " + error.message;
+          messageDiv.style.backgroundColor = "#ce1e10"; // Red for error
+          messageDiv.style.color = "white";
+        } finally {
+          submitButton.disabled = false;
+          // submitButton.classList.remove("is-loading"); // Remove loading indicator
+
+          setTimeout(() => {
+            messageDiv.textContent = "";
+            messageDiv.style.display = "none";
+          }, 4000);
+        }
+      });
+
+      const resetButton = form.querySelector("button[type='reset']");
+      resetButton.addEventListener("click", function () {
+        form.reset();
+        messageDiv.style.display = "none";
+      });
     </script>
   </body>
 </html>
