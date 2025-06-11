@@ -4,90 +4,116 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Estimasi Rencana Anggaran Biaya</title>
+    <style>
+      body {
+        font-family: Cambria;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #ce1e10;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: white;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+
+      .form-container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-container label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        margin-top: 15px;
+      }
+
+      .form-container input,
+      .form-container select {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .form-container button {
+        background-color: #ce1e10;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        flex: 1;
+      }
+
+      .form-container button:hover {
+        background-color: #ef190a;
+      }
+
+      .back-btn {
+        color: black;
+        text-decoration: none;
+        font-size: 1rem;
+        display: inline-block;
+        margin-top: 20px;
+        cursor: pointer;
+      }
+
+      #message {
+        margin: 20px auto;
+        max-width: 800px;
+        padding: 10px;
+        border-radius: 4px;
+        font-weight: bold;
+        text-align: center;
+      }
+    </style>
   </head>
-  <style>
-    body {
-      font-family: Cambria;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background-color: #ce1e10;
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      background-color: white;
-      padding: 30px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-
-    .form-container {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-container label {
-      font-weight: bold;
-      margin-bottom: 5px;
-      margin-top: 15px;
-    }
-
-    .form-container input,
-    .form-container select {
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .form-container button {
-      background-color: #ce1e10;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      flex: 1;
-    }
-
-    .form-container button:hover {
-      background-color: #ef190a;
-    }
-
-    .back-btn {
-      color: black;
-      text-decoration: none;
-      font-size: 1rem;
-      display: inline-block;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-
-    /* Styles for the message display area */
-    #message {
-      margin: 20px auto; /* Centers the message box */
-      max-width: 800px; /* Matches the form width for alignment */
-      padding: 10px;
-      border-radius: 4px;
-      font-weight: bold;
-      text-align: center;
-    }
-  </style>
   <body>
     <header>
       <h1>Form Estimasi Rencana Anggaran Biaya</h1>
@@ -100,7 +126,7 @@
           type="text"
           id="lokasi"
           name="Lokasi"
-          placeholder="Masukan Lokasi Disini"
+          placeholder="Masukan Lokasi"
           required
         />
 
@@ -115,7 +141,7 @@
         <select name="Lingkup Pekerjaan" id="lingkup_pekerjaan">
           <option value="">-- Pilih Lingkup Pekerjaan --</option>
           <option value="Sipil">Sipil</option>
-          <option value="ME">Me</option>
+          <option value="ME">ME</option>
         </select>
 
         <label for="luas_bangunan">Luas Bangunan:</label>
@@ -138,7 +164,122 @@
           required
         />
 
-        <label for=""></label>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th rowspan="2">No</th>
+                <th rowspan="2">Jenis Pekerjaan</th>
+                <th rowspan="2">Satuan</th>
+                <th colspan="1">Volume</th>
+                <th colspan="2">Harga Satuan (Rp)</th>
+                <th colspan="2">Total Harga Satuan (Rp)</th>
+                <th colspan="1">Total Harga (Rp)</th>
+              </tr>
+              <tr>
+                <th>a</th>
+                <th>Material<br />(b)</th>
+                <th>Upah<br />(c)</th>
+                <th>Material<br />(d = a × b)</th>
+                <th>Upah<br />(e = a × c)</th>
+                <th>(f = d + e)</th>
+              </tr>
+            </thead>
+            <tbody id="boq-table-body">
+              <tr>
+                <td style="font-weight: bold">I</td>
+                <td style="font-weight: bold">PEKERJAAN PERSIAPAN</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>
+                  <select name="jenis_pekerjaan" id="jenis_pekerjaan" required>
+                    <option value="">-- Pilih Jenis Pekerjaan --</option>
+                    <optgroup>
+                      <option value="I.01">I.01 Pembersihan lokasi</option>
+                      <option value="I.02">
+                        I.02 Pembuatan bedeng / direksi keet
+                      </option>
+                      <option value="I.03">
+                        I.03 Pekerjaan pengukuran & bowplank
+                      </option>
+                      <option value="I.04">
+                        I.04 Pagar proyek ( seng + rangka ) H: 1.8 m
+                      </option>
+                      <option value="I.05">I.05 Listrik + air kerja</option>
+                      <option value="I.06">
+                        I.06 Foto dokumentasi cetak dan jilid
+                      </option>
+                    </optgroup>
+                  </select>
+                </td>
+                <td>
+                  <select name="satuan" required>
+                    <option value="Ls">Ls</option>
+                    <option value="M1">M1</option>
+                    <option value="M3">M3</option>
+                    <option value="Btg">Btg</option>
+                    <option value="M2">M2</option>
+                    <option value="Bh">Bh</option>
+                    <option value="Unit">Unit</option>
+                    <option value="Kg">Kg</option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="volume"
+                    name="volume"
+                    value="1.00"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="harga-material"
+                    name="material"
+                    onchange="calculateTotalPrice(this)"
+                    required
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="harga-upah"
+                    name="upah"
+                    onchange="calculateTotalPrice(this)"
+                    required
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="total-material"
+                    name="total_material"
+                    disabled
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="total-upah"
+                    name="total_upah"
+                    disabled
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="total-harga"
+                    name="total_harga"
+                    disabled
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <div class="button-group">
           <button type="submit" id="submit-button">Kirim</button>
@@ -146,7 +287,7 @@
         </div>
       </form>
 
-      <a href="landing_page.html" class="back-btn"> ← Kembali ke Beranda </a>
+      <a href="landing_page.html" class="back-btn">← Kembali ke Beranda</a>
     </div>
 
     <div id="message" style="display: none"></div>
@@ -164,8 +305,6 @@
         messageDiv.style.backgroundColor = "beige";
         messageDiv.style.color = "black";
         submitButton.disabled = true;
-        // You can add a class for loading indicator here if you have one
-        // submitButton.classList.add("is-loading");
 
         try {
           const formData = new FormData(this);
@@ -175,9 +314,8 @@
             formDataObj[key] = value;
           }
 
-          // !!! IMPORTANT: Replace with your deployed Google Apps Script Web App URL !!!
           const scriptURL =
-            "https://script.google.com/macros/s/AKfycbwukv_AyjvIZ9cIuMbfIHYhudObu5tRVXuMhp4J4onECcSHiDszNNH7WEfvCWHoR_2Ohg/exec"; // <--- Replace this URL
+            "https://script.google.com/macros/s/AKfycbwukv_AyjvIZ9cIuMbfIHYhudObu5tRVXuMhp4J4onECcSHiDszNNH7WEfvCWHoR_2Ohg/exec";
 
           const response = await fetch(scriptURL, {
             redirect: "follow",
@@ -205,7 +343,6 @@
           messageDiv.style.color = "white";
         } finally {
           submitButton.disabled = false;
-
           setTimeout(() => {
             messageDiv.textContent = "";
             messageDiv.style.display = "none";
@@ -218,6 +355,29 @@
         form.reset();
         messageDiv.style.display = "none";
       });
+
+      function calculateTotalPrice(inputElement) {
+        const row = inputElement.closest("tr");
+
+        if (!row) return;
+
+        const volume = 1.0;
+        const material =
+          parseFloat(row.querySelector("input[name='material']").value) || 0;
+        const upah =
+          parseFloat(row.querySelector("input[name='upah']").value) || 0;
+
+        const totalMaterial = volume * material;
+        const totalUpah = volume * upah;
+        const totalHarga = totalMaterial + totalUpah;
+
+        row.querySelector("input[name='total_material']").value =
+          totalMaterial.toLocaleString("id-ID");
+        row.querySelector("input[name='total_upah']").value =
+          totalUpah.toLocaleString("id-ID");
+        row.querySelector("input[name='total_harga']").value =
+          totalHarga.toLocaleString("id-ID");
+      }
     </script>
   </body>
 </html>
