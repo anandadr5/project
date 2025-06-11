@@ -74,6 +74,10 @@
         background-color: #f2f2f2;
       }
 
+      input.volume {
+        width: 80px;
+      }
+
       .button-group {
         display: flex;
         gap: 10px;
@@ -121,6 +125,24 @@
 
     <div class="container">
       <form id="form" class="form-container">
+        <label for="nomor_ulok">Nomor Ulok</label>
+        <input
+          type="text"
+          id="nomor_ulok"
+          name="Nomor Ulok"
+          placeholder="Masukan Nomor Ulok"
+          required
+        />
+
+        <label for="nama_cabang">Nama Cabang</label>
+        <input
+          type="text"
+          id="nama_cabang"
+          name="Nama Cabang"
+          placeholder="Masukan Nama Cabang"
+          required
+        />
+
         <label for="lokasi">Lokasi:</label>
         <input
           type="text"
@@ -133,7 +155,7 @@
         <label for="proyek">Proyek:</label>
         <select name="Proyek" id="proyek" required>
           <option value="">-- Pilih Jenis Proyek --</option>
-          <option value="Alfamart Reguler">Alfamart Reguler</option>
+          <option value="Alfamart Reguler">Reguler</option>
           <option value="Franchise">Franchise</option>
         </select>
 
@@ -231,7 +253,8 @@
                     class="volume"
                     name="volume"
                     value="1.00"
-                    readonly
+                    onchange="calculateTotalPrice(this)"
+                    required
                   />
                 </td>
                 <td>
@@ -361,7 +384,8 @@
 
         if (!row) return;
 
-        const volume = 1.0;
+        const volume =
+          parseFloat(row.querySelector("input[name='volume']").value) || 0;
         const material =
           parseFloat(row.querySelector("input[name='material']").value) || 0;
         const upah =
