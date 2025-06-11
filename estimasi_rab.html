@@ -4,9 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Estimasi Rencana Anggaran Biaya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       body {
-        font-family: Cambria;
+        font-family: 'Inter', sans-serif;
         background-color: #f4f4f4;
         margin: 0;
         padding: 0;
@@ -17,10 +22,12 @@
         color: white;
         text-align: center;
         padding: 20px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
       }
 
       .container {
-        max-width: 800px;
+        max-width: 900px; /* Increased max-width for better table display */
         margin: 20px auto;
         background-color: white;
         padding: 30px;
@@ -37,6 +44,7 @@
         font-weight: bold;
         margin-bottom: 5px;
         margin-top: 15px;
+        color: #333;
       }
 
       .form-container input,
@@ -45,39 +53,56 @@
         margin-bottom: 15px;
         border: 1px solid #ddd;
         border-radius: 5px;
+        transition: border-color 0.3s;
+      }
+
+      .form-container input:focus,
+      .form-container select:focus {
+        border-color: #ce1e10;
+        outline: none;
       }
 
       .table-container {
         overflow-x: auto;
         margin-top: 20px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 900px;
+        min-width: 900px; /* Ensures minimum width for table columns */
       }
 
-      table,
-      th,
-      td {
-        border: 1px solid black;
-      }
-
-      th,
-      td {
-        padding: 8px;
+      table th,
+      table td {
+        border: 1px solid #e0e0e0;
+        padding: 10px;
         text-align: center;
+        font-size: 0.9rem;
       }
 
-      th {
+      table th {
         background-color: #f2f2f2;
+        font-weight: 600;
+        color: #555;
+      }
+
+      table td input[type="number"],
+      table td input[type="text"],
+      table td select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box; /* Include padding in element's total width and height */
       }
 
       .button-group {
         display: flex;
         gap: 10px;
-        margin-top: 10px;
+        margin-top: 20px;
       }
 
       .form-container button {
@@ -87,21 +112,33 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.3s;
+        transition: background-color 0.3s, transform 0.2s;
         flex: 1;
+        font-weight: 500;
       }
 
       .form-container button:hover {
         background-color: #ef190a;
+        transform: translateY(-2px);
+      }
+
+      .form-container button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
       }
 
       .back-btn {
-        color: black;
+        color: #555;
         text-decoration: none;
-        font-size: 1rem;
+        font-size: 0.9rem;
         display: inline-block;
-        margin-top: 20px;
+        margin-top: 30px;
         cursor: pointer;
+        transition: color 0.3s;
+      }
+
+      .back-btn:hover {
+        color: #ce1e10;
       }
 
       #message {
@@ -111,6 +148,49 @@
         border-radius: 4px;
         font-weight: bold;
         text-align: center;
+        display: none; /* Hidden by default */
+      }
+
+      .delete-row-btn {
+        background-color: #f44336 !important;
+        padding: 8px 12px !important;
+        border-radius: 4px !important;
+        font-weight: normal !important;
+        margin: 0 !important;
+        width: auto !important;
+        flex: none !important;
+      }
+
+      .delete-row-btn:hover {
+        background-color: #d32f2f !important;
+      }
+
+      .add-row-btn {
+        background-color: #4caf50 !important;
+        margin-top: 10px !important;
+        padding: 10px 15px !important;
+        flex: none !important;
+        align-self: flex-end; /* Align to the right */
+      }
+
+      .add-row-btn:hover {
+        background-color: #45a049 !important;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .container {
+          margin: 10px;
+          padding: 20px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        table {
+          min-width: 600px; /* Adjust min-width for smaller screens */
+        }
       }
     </style>
   </head>
@@ -133,7 +213,7 @@
         <label for="proyek">Proyek:</label>
         <select name="Proyek" id="proyek" required>
           <option value="">-- Pilih Jenis Proyek --</option>
-          <option value="Alfamart Reguler">Alfamart Reguler</option>
+          <option value="Alfamart Reguler">Reguler</option>
           <option value="Franchise">Franchise</option>
         </select>
 
@@ -144,9 +224,9 @@
           <option value="ME">ME</option>
         </select>
 
-        <label for="luas_bangunan">Luas Bangunan:</label>
+        <label for="luas_bangunan">Luas Bangunan (m²):</label>
         <input
-          type="text"
+          type="number"
           id="luas_bangunan"
           name="Luas Bangunan"
           placeholder="Masukan Luas Bangunan"
@@ -156,7 +236,7 @@
         <label for="tanggal">Tanggal:</label>
         <input type="date" id="tanggal" name="Tanggal" required />
 
-        <label for="waktu_pelaksanaan">Waktu Pelaksanaan:</label>
+        <label for="waktu_pelaksanaan">Waktu Pelaksanaan (Estimasi Selesai):</label>
         <input
           type="date"
           id="waktu_pelaksanaan"
@@ -175,6 +255,7 @@
                 <th colspan="2">Harga Satuan (Rp)</th>
                 <th colspan="2">Total Harga Satuan (Rp)</th>
                 <th colspan="1">Total Harga (Rp)</th>
+                <th rowspan="2">Aksi</th>
               </tr>
               <tr>
                 <th>a</th>
@@ -188,98 +269,28 @@
             <tbody id="boq-table-body">
               <tr>
                 <td style="font-weight: bold">I</td>
-                <td style="font-weight: bold">PEKERJAAN PERSIAPAN</td>
-              </tr>
-              <tr>
-                <td>1</td>
-                <td>
-                  <select name="jenis_pekerjaan" id="jenis_pekerjaan" required>
-                    <option value="">-- Pilih Jenis Pekerjaan --</option>
-                    <optgroup>
-                      <option value="I.01">I.01 Pembersihan lokasi</option>
-                      <option value="I.02">
-                        I.02 Pembuatan bedeng / direksi keet
-                      </option>
-                      <option value="I.03">
-                        I.03 Pekerjaan pengukuran & bowplank
-                      </option>
-                      <option value="I.04">
-                        I.04 Pagar proyek ( seng + rangka ) H: 1.8 m
-                      </option>
-                      <option value="I.05">I.05 Listrik + air kerja</option>
-                      <option value="I.06">
-                        I.06 Foto dokumentasi cetak dan jilid
-                      </option>
-                    </optgroup>
-                  </select>
-                </td>
-                <td>
-                  <select name="satuan" required>
-                    <option value="Ls">Ls</option>
-                    <option value="M1">M1</option>
-                    <option value="M3">M3</option>
-                    <option value="Btg">Btg</option>
-                    <option value="M2">M2</option>
-                    <option value="Bh">Bh</option>
-                    <option value="Unit">Unit</option>
-                    <option value="Kg">Kg</option>
-                  </select>
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    class="volume"
-                    name="volume"
-                    value="1.00"
-                    readonly
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    class="harga-material"
-                    name="material"
-                    onchange="calculateTotalPrice(this)"
-                    required
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    class="harga-upah"
-                    name="upah"
-                    onchange="calculateTotalPrice(this)"
-                    required
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    class="total-material"
-                    name="total_material"
-                    disabled
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    class="total-upah"
-                    name="total_upah"
-                    disabled
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    class="total-harga"
-                    name="total_harga"
-                    disabled
-                  />
+                <td style="font-weight: bold; text-align: left;" colspan="9">
+                  PEKERJAAN PERSIAPAN
                 </td>
               </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="8" style="text-align: right; font-weight: bold;">
+                  TOTAL RANCANGAN ANGGARAN (GRAND TOTAL):
+                </td>
+                <td id="grand-total-amount" style="font-weight: bold; text-align: center;">
+                  Rp 0
+                </td>
+                <td></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
+
+        <button type="button" id="add-row-btn" class="add-row-btn">
+          Tambah Item Pekerjaan
+        </button>
 
         <div class="button-group">
           <button type="submit" id="submit-button">Kirim</button>
@@ -290,13 +301,555 @@
       <a href="landing_page.html" class="back-btn">← Kembali ke Beranda</a>
     </div>
 
-    <div id="message" style="display: none"></div>
+    <div id="message" role="status" aria-live="polite"></div>
 
     <script>
+      // --- Data harga Sipil dan ME, dikategorikan ---
+      const categorizedSipilPrices = {
+        "PEKERJAAN PERSIAPAN": [
+          { "Jenis Pekerjaan": "I.01 Pembersihan lokasi", "Satuan": "Ls", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "I.02 Pembuatan bedeng / direksi keet", "Satuan": "Ls", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "I.03 Pekerjaan pengukuran & bowplank", "Satuan": "Ls", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "I.04 Pagar proyek ( seng + rangka ) H : 1.8 m", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "I.05 Listrik + air kerja", "Satuan": "Ls", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "I.06 Foto dokumentasi cetak dan dijilid", "Satuan": "Ls", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN BOBOKAN / BONGKARAN": [
+          { "Jenis Pekerjaan": "II.01 Bongkaran & buang puing bekas pekerjaan renovasi", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "II.02 Bongkar & perbaikan bangunan tetangga yang kena potong", "Satuan": "Ls", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "II.03 Bongkar, penurunan elevasi & pasang kembali trotoar** dengan izin / tanpa izin", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "II.04 Tebang pohon / Kepras Pohon** dengan izin / tanpa izin", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN TANAH": [
+          { "Jenis Pekerjaan": "III.01 Galian tanah", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "III.02 Urug tanah kembali", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "III.03 Urug menggunakan bekas/puing bongkaran", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "III.04 Urug sirtu …. cm dari elevasi jalan + pemadatan", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "III.05 Urugan tanah padas …. cm dari elevasi jalan + pemadatan", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "III.06 Urugan tanah urug.... cm dari elevasi jalan + pemadatan ( H urugan .... cm )", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN PONDASI & BETON": [
+          { "Jenis Pekerjaan": "IV.01 Pondasi batu kali, 1 pc : 6 ps", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.02 Pondasi batu kali, 1 pc : 6 ps u/ drainase", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.03 Pondasi plat setempat", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.04 Pondasi rolaq bata, 1 pc : 6 ps", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.05 Trucuk kayu gelam @2 m", "Satuan": "Btg", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.06 Sloof beton 15x20 cm campuran 1:2:3 tul. 4 Ø10 mm, sengkang Ø6 mm-150 mm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.07 Kolom beton 25x25 cm campuran 1:2:3, tul 8 Ø10 mm, sengkang Ø6 mm - 150 mm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.08 Kolom beton 20x20 cm campuran 1:2:3, tul 8 Ø10 mm, sengkang Ø6 mm- 150 mm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.09 Balok beton 20x30 cm struktur dak teras campuran 1:2:3, tul 8 Ø12 mm, sengkang Ø8 mm-150mm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.10 Ring balk 10x15 cm campuran 1:2:3, tulangan 4 Ø8 mm, sengkang Ø6 mm-150 mm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.11 Kolom praktis 10x15 cm campuran 1:2:3, tulangan 4 Ø8 mm, sengkang Ø6 mm-150 mm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.12 Cor dak beton tebal 12 cm campuran 1:2:3, tul Ø8 mm, 2 lapis, jarak 150 mm + dilapisi plastik", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.13 Plat deker beton tebal ….. cm campuran 1:2:3, tul Ø12 mm, 2 lapis jarak 150 mm", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.14 Cor beton dudukan brankas (ukuran 1x1x0,20) + selimut brangkas tebal 10 cm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IV.15 Cor plat lantai tebal 8 cm mutu, wiremesh M6", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN PASANGAN": [
+          { "Jenis Pekerjaan": "V.01 Pasangan dinding bata, 1 pc : 6 ps", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.02 Pasangan bata ringan merk Lokal tebal 10 cm", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.03 Plester + aci untuk pasangan dinding bata 1 pc : 6 ps", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.04 Plester tanpa aci untuk dinding sopi-sopi dalam", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.05 Partisi gypsum 9 mm dua sisi merk Aplus / Knauf + rangka metal stud", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.06 Partisi gypsum 9 mm satu sisi merk Aplus / Knauf + rangka metal stud", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.07 Plafond gypsum 9mm merk Aplus / Knauf + rangka hollow galvalume + kawat penggantung", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.08 Plafond GRC 4mm + rangka hollow galvalume + kawat penggantung", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.09 Pasang paving block area parkir ukuran 20x20x6 cm / 20x10x6 cm*press mesin", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.10 Pasang paving block area parkir ukuran 20x20x8 cm / 20x10x8 cm*press mesin", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.11 Pemasangan pipa drain 3/4\" Wavin inbow …titik + perbaikan bobokan pipa refrigant AC", "Satuan": "Ls", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.12 Peresapan AC uk 40x40x60 cm + tutup cor beton", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.13 Hanger genset + plat besi t: 5 mm + dinabolt 8 mm + kupingan besi + rantai + gembok", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.14 Hanger spanduk pipa dia. 1/2\" pipa hitam + zinchromate + cat putih", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.15 Pasangan kanstin beton ukuran 15x20x40 cm untuk area parkir finishing cat hitam kuning", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.16 Gembok merk Solid 60 mm", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "V.17 Glassblock / Rooster Sirip", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN BESI": [
+          { "Jenis Pekerjaan": "VI.01 WF 200x100x5,5x8 mm include zinchromate", "Satuan": "Kg", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.02 WF 150x75x5x7 mm include zinchromate", "Satuan": "Kg", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.03 CNP 125x50x20x2,3 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.04 CNP 100x50x20x2,3 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.05 CNP 75x45x15x1.6 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.06 Hollow besi hitam 40x40x1.2 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.07 Tangga baja CNP 150x50x20x2,3 mm double, rangka trap besi siku 40x40x4 mm, plat bordes 2,3 mm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.08 Tangga hollow besi 100x50x2 mm single, rangka trap besi siku 40x40x4 mm, plat bordes 2,3 mm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.09 Besi hollow 40x20x1.6 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.10 Besi hollow 100x50x2 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.11 Besi hollow 60x40x1.8 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.12 Kolom beton 20x20 cm campuran 1:2:3, tul 8 Ø10 mm, sengkang Ø6 mm - 150 mm**kolom pedestal", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.13 Plat hitam tebal 8 mm include Zinchromate", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.14 Angkur M12 + ring + mur untuk penghubung antar kremona dengan kolom", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.15 Mur + baut baja M12 untuk sambungan baja", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.16 Angkur M16 + ring + mur untuk pedestal", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.17 Mur + baut baja M 16 untuk sambungan baja", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.18 CNP 150x50x20x2,3 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.19 CNP 150x50x20x3,2 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.20 CNP 200x75x20x2,3 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.21 CNP 200x75x20x3,2 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.22 Siku 50x50x5 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.23 Siku 40x40x4 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.24 Besi beton Ø10 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.25 Besi beton Ø12 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.26 Besi beton Ø16 mm include zinchromate", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.27 Jarum keras / turnbuckle M16", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.28 Jarum keras / turnbuckle M22", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.29 Teralis besi rangka siku 30x30x2 mm + wiremesh M8", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.30 Pasang tiang pipa BSP 2 inch tebal 2 mm tinggi 1,2 m", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.31 Pasang rantai M8 untuk pagar pembatas parkir", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.32 Pasang wiremesh M6 + zinchromate untuk pengaman atap belakang dan di atas folding gate", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.33 Wiremesh M8 + plat strip 3x19 mm + finish cat warna putih merk Avian untuk pengaman dinding (luar)", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.34 Pasang wiremesh M8 untuk pengaman dinding gudang (dalam)", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN KERAMIK": [
+          { "Jenis Pekerjaan": "VII.01 Pasang keramik lantai 40x40 merk Asia Tile / Mulia KW 1", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VII.02 Pasang keramik granit merk Sandimas ukuran 60x60 cm", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VII.03 Pasang keramik kolom untuk kolom bebas ukuran 30x30 cm", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VII.04 Pasang keramik lantai KM/WC ukuran 25x25 cm merk Asia Tile / Ikad / OK / Mulia KW 1 motif kasar", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VII.05 Pasang keramik dinding KM/WC ukuran 25x40 merk Asia Tile / Ikad / OK / Mulia KW 1 setinggi plafond", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VII.06 Pasang keramik lantai KM/WC ukuran 20x20 cm merk Asia Tile / Mulia KW 1 motif kasar", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VII.07 Pasang keramik dinding KM/WC ukuran 20x25 cm merk Asia Tile / Mulia KW 1 setinggi plafond", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN PLUMBING": [
+          { "Jenis Pekerjaan": "VIII.01 Instalasi pipa PVC 4\" tipe D Wavin vertikal", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VIII.02 Instalasi pipa PVC 4\" tipe D Wavin horizontal", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VIII.03 Instalasi pipa PVC 4\" tipe AW Wavin untuk casing sumur bor", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VIII.04 Instalasi air bersih pipa PVC 3/4 inch tipe AW Wavin / Rucika", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VIII.05 Instalasi air bersih pipa PVC 1/2 inch tipe AW Wavin / Rucika", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VIII.06 Instalasi air bersih pipa PVC 1 1/2 inch tipe D Wavin / Rucika untuk drainase chiller", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN SANITARY & ACECORIES": [
+          { "Jenis Pekerjaan": "IX.a.01 Pasang closet duduk merk Toto CW 420 + jet shower complete", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.02 Pasang closet jongkok merk Toto CE7 warna putih", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.03 Pasang urinoir merk Toto U57 M + push kran + aksesoris", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.04 Pasang wastafel merk Toto LW 220 J / LW 230 J + kran untuk wastafel merk Onda", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.05 Pasang tempat tisu merk Lokal", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.06 Floor drain kotak stainless berlubang ukuran 5 mm, dimensi 10x10 cm", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.07 Kran air merk Onda tipe CLS", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.08 Pembuatan janitor finishing keramik 40x40 ex. Asia Tile + acessories", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          // Nested items (as provided in the list, though it's unconventional in a flat list)
+          { "Jenis Pekerjaan": "V.01 a. Pasangan batu bata", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "VI.01 b. Pasangan Keramik 40x40 merk Asia Tile tinggi: 1,6 m", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.07 c. Kran air merk Onda tipe CLS.", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.a.06 d. Floor drain kotak stainless berlubang ukuran 5 mm dimensi 10x10 cm", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          // Bor Sumur / Pengadaan PAM/instalasi air bersih
+          { "Jenis Pekerjaan": "IX.b.01 Bor sumur jet pump sampai kedalaman air bersih (layak dikonsumsi)", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.02 Pasang PAM + instalasi inlet ( Tergantung Daerah )", "Satuan": "Ls", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.03 Mesin pompa air Shimizu PS 130 BIT**otomatis, sumur dangkal", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.04 Mesin pompa Shimizu PC 502 bit + otomatis** kedalaman sumur 50 m", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.05 Mesin pompa Shimizu PC 375 bit + otomatis** kedalaman sumur 40 m", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.06 Mesin pompa Shimizu PC 260 bit + otomatis ** kedalaman sumur 30 m", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.07 Rumah pompa pasangan bata ukuran 1x1x1 m + tutup plat bordess tebal 2.3 mm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.08 Torn air tanki kapasitas 500 liter merk Penguin + radar otomatis", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.09 Konstruksi besi siku 40x40x3 mm untuk dudukan torn", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.b.10 Pasangan ground tank (pasangan batu bata + plester aci) + torn 500 liter + penutup plat beton", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          // Septictank & Resapan
+          { "Jenis Pekerjaan": "IX.c.01 Pekerjaan septictank buis beton diameter 80 cm tinggi 2 m + peresapan buis beton", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.c.02 Sumur resapan buis beton diameter 0,8 m kedalaman 2 m + tutup cor beton bertulang tebal 15 cm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "IX.c.03 Bak kontrol (pasangan bata + plester aci) ukuran dalam 30x30x40 cm tanpa tutup", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN ATAP": [
+          { "Jenis Pekerjaan": "X.01 Atap rangka baja ringan C75 klasik kupingan 35 tebal: 0,75 mm + reng th Th 30 t: 0,45 mm", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "X.02 Atap zincalume tebal 0,3 mm merk Kencana / Sakura, natural", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "X.03 Kanopi zincalume", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "X.04 Waterproofing dak beton merk Sikatop 107 dak diatas km / wc", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "X.05 Pekerjaan talang dengan rangka baja ringan, lebar 40 cm tinggi 20 cm + zincalume lebar 120 cm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "X.06 Pekerjaan nok / flashing zincalume datar lebar 60 cm tebal 0,3 mm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "X.07 Pekerjaan pasang zincalume datar lebar 120 cm tebal 0,3 mm**untuk penutup lisplang", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN KUSEN, PINTU & KACA": [
+          { "Jenis Pekerjaan": "XI.01 Pasang kusen aluminium 3\" coating putih merk Alexindo / Indal", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XI.02 Pasang Kusen aluminium 3\" natural merk Alexindo / Indal", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XI.03 Pasang kaca polos tebal 5 mm merk Lokal**Sealant bening", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XI.04 Pasang kaca polos tebal 10 mm merk Lokal non tempered**Sealant bening", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XI.05 Pasang pintu double swing frameless kaca tebal 10 mm non tempered + kunci", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XI.06 Pintu double swing + kaca tebal 5mm + kunci merk dekson", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XI.07 Pekerjaan P1/P2 dengan kusen hollow 40x60x1,6 mm & rangka pintu + multipleks 9 mm + kunci", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XI.08 Pekerjaan pintu besi dengan kusen besi hollow 40x40x2 mm, daun pintu single plat tebal 2 mm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XI.09 Pintu alumunium coating putih single spandrel vertikal include kusen pintu KM/WC", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN FINISHING": [
+          { "Jenis Pekerjaan": "XII.01 Cat dinding luar merk Avitek Super White eksterior", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XII.02 Cat dinding luar lapis waterproofing (samping, belakang, pembatas halaman bagian luar) merk No Drop", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XII.03 Cat dinding dalam merk Avitek interior white", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XII.04 Cat plafond merk Avitek interior white", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XII.05 Cat kusen + daun pintu kayu dan besi merk Avian warna putih**include plamir", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XII.06 Cat merk Nippon roadline warna kuning untuk paving blok area depan pintu double swing", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+        ],
+        "PEKERJAAN TAMBAHAN": [
+          { "Jenis Pekerjaan": "XIII.01 Pasang pipa PVC 1\" type AW Wavin instalasi pompa sumur dalam", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.02 Pasang pipa PVC 1 1/4 \" type AW Wavin instalasi pompa sumur dalam", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.03 Pasang kawat berduri razor BTO 22 + tiang siku 40x40x4 mm + cat Avian", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.04 Folding gate tebal plat harmonika 0,5 mm + cat putih merk Avian", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.05 Bingkai spanduk ukuran 120x75 cm rangka hollow 20x20x1,2 mm + plat galvalume tebal 0,4 mm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.06 Cat folding gate / pintu besi lipat merk Avian white", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.07 Cor beton campuran 1:2:3 tanpa tulangan", "Satuan": "M3", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.08 Grill besi UNP 100 mm tebal 3,8 mm jarak 3 cm", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.09 Pintu besi manhole akses ke dak beton ukuran 80x80 cm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.10 Plat bondek tebal 0,65 mm terpasang + finish cat Avian warna putih", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.11 Gypsum 9 mm merk Aplus / Knauf**lapis kedua diatas folding gate tanpa rangka", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.12 Multiplek 9 mm**lapis pertama diatas folding gate tanpa rangka", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.13 Pasang keramik merk Roman W63804R D'Tube Black 30x60 cm**area backwall kasir", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.14 Pasang keramik merk Habitat Bricks white 25x50 cm**area kitchen zink Bean Spot", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.15 ACP Bright Silver merk Seven PVDF t: 4 mm (ekstserior) untuk fasade", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.16 Pekerjaan plat perforated tebal 0,8 mm ukuran lubang 1 cm", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.17 Kerangkeng dudukan UPS Besi diameter 8 mm + siku 30x30x2 mm", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.18 Besi siku 30x30x2 mm ukuran 30x40x10 cm + dinabolt M 10 untuk dudukan instalasi (ME)", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.19 Rumah pompa menggunakan besi beton 8 mm + besi siku 30x30x2 mm + plat strip 2x20mm (Jetpump)", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.19 Rumah pompa menggunakan besi beton 8 mm + plat strip 2x20mm (sumur dangkal)", "Satuan": "Unit", "Harga Material": 0, "Harga Upah": 0 }, // Duplicate XIII.19 with different description
+          { "Jenis Pekerjaan": "XIII.20 Kawat ram ukuran lubang 1 x 1 cm (hijau) di bentuk tabung tinggi 30 cm diameter 4 inchi", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.21 Flexibel 20 mm warna putih untuk saluran buangan air dari Chiller", "Satuan": "M1", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "XIII.22 Pemadatan tanah khusus untuk lokasi yang tidak ada urugan", "Satuan": "M2", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "Kaca cermin ukuran 40x60 cm", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "Gantungan baju / kapstok plastik merk Lion Star", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+          { "Jenis Pekerjaan": "Pelampung kuningan 3/4 inchi + bola pelampung untuk torn merk Lokal", "Satuan": "Bh", "Harga Material": 0, "Harga Upah": 0 },
+        ]
+      };
+
+      const categorizedMePrices = {
+        "INSTALASI": [
+            { "Jenis Pekerjaan": "XIV.01 Instalasi induk lampu (kabel NYM merk Eterna 2 x 1,5 mm2)", "Satuan": "ttk", "Harga Material": 225000, "Harga Upah": 40000 },
+            { "Jenis Pekerjaan": "XIV.02 Instalasi paralel lampu (kabel merk Eterna NYM 2 x 1,5 mm2)", "Satuan": "ttk", "Harga Material": 111000, "Harga Upah": 30000 },
+            { "Jenis Pekerjaan": "XIV.03 Instalasi stop kontak khusus AC (kabel NYM merk Eterna 3 x 2,5 mm2)", "Satuan": "ttk", "Harga Material": 293000, "Harga Upah": 40000 },
+            { "Jenis Pekerjaan": "XIV.04 Instalasi induk stop kontak biasa (kabel NYM merk Eterna 3 x 2.5 mm2)", "Satuan": "ttk", "Harga Material": 323000, "Harga Upah": 40000 },
+            { "Jenis Pekerjaan": "XIV.05 Instalasi paralel stop kontak biasa (kabel NYM merk Eterna 3 x 2,5 mm2)", "Satuan": "ttk", "Harga Material": 138000, "Harga Upah": 26000 },
+            { "Jenis Pekerjaan": "XIV.06 Instalasi lampu shop sign single pole (kabel NYM merk Eterna 2 x 2.5 mm2)", "Satuan": "Ls", "Harga Material": 276500, "Harga Upah": 33000 },
+            { "Jenis Pekerjaan": "XIV.07 Instalasi sound system kabel merk. Eterna NYMHY 2 x 0,75 mm2 include conduit", "Satuan": "ttk", "Harga Material": 201500, "Harga Upah": 26000 },
+            { "Jenis Pekerjaan": "XIV.08 Instalasi Bell (Saklar + bell 220 VAC + Kabel NYMHY 2x0,75mm merk Eterna)", "Satuan": "ttk", "Harga Material": 280000, "Harga Upah": 40000 },
+            { "Jenis Pekerjaan": "XIV.09 Instalasi kabel genset kabel NYY 3x4 mm merk Eterna (Genset) + spare keluar 2 m dari dinding", "Satuan": "m", "Harga Material": 41500, "Harga Upah": 18000 },
+            { "Jenis Pekerjaan": "XIV.10 Instalasi radar tom untuk otomatis pompa (kabel NYMHY merk Etema 2x0,75 mm²)", "Satuan": "ttk", "Harga Material": 230000, "Harga Upah": 32000 },
+            { "Jenis Pekerjaan": "XIV.11 Kabel Power/Toefoer merk Etema NYY 4 x 10 mm2", "Satuan": "m", "Harga Material": 114000, "Harga Upah": 21000 },
+            { "Jenis Pekerjaan": "XIV.11 Kabel Power/Toefoer merk Eternus NYY 4 x 16 mm2", "Satuan": "m", "Harga Material": 152000, "Harga Upah": 21000 }, // Duplicate XIV.11 with different size
+            { "Jenis Pekerjaan": "XIV.12 Instalasi MCB 3 phase untuk Non 24 jam kabel merk Eterna NYY 3 x 4 mm2", "Satuan": "m", "Harga Material": 41500, "Harga Upah": 18000 },
+            { "Jenis Pekerjaan": "XIV.13 Instalasi mesin kopi Faema merk Eterna kabel NYM 3 x 4 mm2 Kondisional untuk toko Advance", "Satuan": "m", "Harga Material": 41000, "Harga Upah": 10000 },
+            { "Jenis Pekerjaan": "XIV.14 Grounding panel Tembaga 12 mm kabel BC 6 mm + kabel scoen cincin grounding (All Grounding 1 titik terpusat di panel)", "Satuan": "Ls", "Harga Material": 395000, "Harga Upah": 137000 },
+        ],
+        "FIXTURE": [
+            { "Jenis Pekerjaan": "XV.01 Panel WALL MOUTING TYPE MODULE/ PLAT dilengkapi lampu indikator + fuse MCB merk HAGGER/ LEGRAND (hanya ongkos pasang + mobilisasi) SBO", "Satuan": "unit", "Harga Material": 0, "Harga Upah": 528000 },
+            { "Jenis Pekerjaan": "XV.02 Lampu LED 18 W (ongkos pasang + mobilisasi) SBO", "Satuan": "bh", "Harga Material": 0, "Harga Upah": 20500 },
+            { "Jenis Pekerjaan": "XV.03 Lampu TKO 1x18W (SBO) waterproof untuk gang, belakang dan parkir", "Satuan": "bh", "Harga Material": 0, "Harga Upah": 35000 },
+            { "Jenis Pekerjaan": "XV.04 Fitting bohlam 9 W merk Hanncokh sensor gerak", "Satuan": "bh", "Harga Material": 91500, "Harga Upah": 17000 },
+            { "Jenis Pekerjaan": "XV.05 Lampu sorot 50 w merk Inlite min IP 65 area belakang, samping bangunan dan area parkir kondisional", "Satuan": "bh", "Harga Material": 300000, "Harga Upah": 37000 },
+            { "Jenis Pekerjaan": "XV.06 Exhause fan 10 inch merk Panasonic untuk plafon area gudang dan rumah chiller", "Satuan": "bh", "Harga Material": 443000, "Harga Upah": 37000 },
+            { "Jenis Pekerjaan": "XV.07 Stop kontak biasa (merk Broco Gracio) inbow", "Satuan": "bh", "Harga Material": 26000, "Harga Upah": 20000 },
+            { "Jenis Pekerjaan": "XV.08 Stop kontak biasa (merk Broco Gracio) Outbow", "Satuan": "bh", "Harga Material": 31000, "Harga Upah": 18000 },
+            { "Jenis Pekerjaan": "XV.09 Stop kontak GB 4 lubang merk Uticon", "Satuan": "bh", "Harga Material": 26000, "Harga Upah": 15000 },
+            { "Jenis Pekerjaan": "XV.10 Stop kontak GB 6 lubang merk Uticon", "Satuan": "bh", "Harga Material": 35800, "Harga Upah": 15000 },
+            { "Jenis Pekerjaan": "XV.11 Stop kontak Waterproof merk Broco Atlantic 1 lubang", "Satuan": "bh", "Harga Material": 50000, "Harga Upah": 15000 },
+            { "Jenis Pekerjaan": "XV.12 Saklar tunggal merk Broco Gracio Outbow", "Satuan": "bh", "Harga Material": 28500, "Harga Upah": 12000 },
+            { "Jenis Pekerjaan": "XV.13 Saklar Serie merk Broco Gracio Outbow", "Satuan": "bh", "Harga Material": 35000, "Harga Upah": 11500 },
+            { "Jenis Pekerjaan": "XV.14 Bel merk Panasonic EGB 888+ saklar bel merk Panasonic E66331", "Satuan": "bh", "Harga Material": 190000, "Harga Upah": 30000 },
+            { "Jenis Pekerjaan": "XV.15 Steker merk Broco untuk keluaran dari lampu emergency (kerangkeng + dudukan UPS masuk pekerjaan sipil)", "Satuan": "sel", "Harga Material": 14000, "Harga Upah": 5000 },
+            { "Jenis Pekerjaan": "XV.16 Openback Alumunium 3 inchi tutup coating putih", "Satuan": "m", "Harga Material": 81000, "Harga Upah": 11000 },
+            { "Jenis Pekerjaan": "XV.17 Pasang tiang lampu parkir pipa besi 2 inchi tebal 1,6 mm (pondasi 0,5 meter, tinggi tiang di atas paving 3 meter tertanam 0.5 m) + zinchromate cat putih", "Satuan": "bh", "Harga Material": 410000, "Harga Upah": 85000 },
+            { "Jenis Pekerjaan": "XV.18 MCB 3 Phasa 32 A merk Schneider/Hager Non 24 Jam (di dalam panel utama)", "Satuan": "bh", "Harga Material": 388000, "Harga Upah": 48000 },
+            { "Jenis Pekerjaan": "XV.19 Stop kontak 4 lubang + steker merk Broco + kabel NYM 3x2.5 mm2 untuk kasir", "Satuan": "Unit", "Harga Material": 80000, "Harga Upah": 15000 },
+        ]
+      };
+
+
       const form = document.getElementById("form");
       const submitButton = document.getElementById("submit-button");
       const messageDiv = document.getElementById("message");
+      const boqTableBody = document.getElementById("boq-table-body");
+      const addRowButton = document.getElementById("add-row-btn");
+      const grandTotalAmount = document.getElementById("grand-total-amount");
+      const lingkupPekerjaanSelect = document.getElementById("lingkup_pekerjaan");
 
+      // Fungsi untuk memformat angka ke Rupiah Indonesia
+      const formatRupiah = (number) => {
+        return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(number);
+      };
+
+      // Fungsi untuk mengurai string Rupiah kembali ke angka
+      const parseRupiah = (formattedString) => {
+        const cleanedString = formattedString.replace(/Rp\s?|\./g, '').replace(/,/g, '.');
+        return parseFloat(cleanedString) || 0;
+      };
+
+      // Fungsi untuk mengisi opsi "Jenis Pekerjaan" berdasarkan lingkup yang dipilih
+      const populateJenisPekerjaanOptions = (scope) => {
+        console.log("populateJenisPekerjaanOptions dipanggil untuk Lingkup:", scope); // Debugging
+        const jenisPekerjaanSelects = boqTableBody.querySelectorAll(".jenis-pekerjaan");
+        let categorizedDataSource = {};
+
+        if (scope === "Sipil") {
+          categorizedDataSource = categorizedSipilPrices;
+        } else if (scope === "ME") {
+          categorizedDataSource = categorizedMePrices;
+        }
+
+        jenisPekerjaanSelects.forEach(selectElement => {
+          // Bersihkan opsi yang ada
+          selectElement.innerHTML = '<option value="">-- Pilih Jenis Pekerjaan --</option>';
+
+          // Tambahkan optgroup dan opsi baru dari kategori yang dipilih
+          for (const category in categorizedDataSource) {
+            if (categorizedDataSource.hasOwnProperty(category)) {
+              const optgroup = document.createElement('optgroup');
+              optgroup.label = category; // Label adalah nama kategori
+              
+              categorizedDataSource[category].forEach(item => {
+                const option = document.createElement("option");
+                option.value = item["Jenis Pekerjaan"];
+                option.textContent = item["Jenis Pekerjaan"];
+                optgroup.appendChild(option);
+              });
+              selectElement.appendChild(optgroup);
+            }
+          }
+
+          // Panggil autoFillPrices untuk baris ini jika sudah ada nilai terpilih
+          // Ini penting saat mengganti lingkup pekerjaan agar harga otomatis terupdate
+          console.log("Memeriksa selectElement.value untuk autoFillPrices:", selectElement.value); // Debugging
+          if (selectElement.value) {
+              autoFillPrices(selectElement);
+          } else {
+              // Kosongkan harga jika tidak ada pilihan atau pilihan awal
+              const row = selectElement.closest('tr');
+              if (row) {
+                  row.querySelector('.harga-material').value = '';
+                  row.querySelector('.harga-upah').value = '';
+                  calculateTotalPrice(row.querySelector('.volume')); // Hitung ulang total untuk harga kosong
+              }
+          }
+        });
+      };
+
+      // Fungsi untuk mengisi otomatis harga material dan upah
+      const autoFillPrices = (selectElement) => {
+        console.log("autoFillPrices dipanggil untuk Jenis Pekerjaan:", selectElement.value); // Debugging
+        const row = selectElement.closest("tr");
+        const selectedJenisPekerjaan = selectElement.value;
+        const currentLingkupPekerjaan = lingkupPekerjaanSelect.value;
+
+        let selectedItem = null;
+        let dataSource = {};
+
+        if (currentLingkupPekerjaan === "Sipil") {
+          dataSource = categorizedSipilPrices;
+        } else if (currentLingkupPekerjaan === "ME") {
+          dataSource = categorizedMePrices;
+        }
+
+        // Cari item di seluruh kategori
+        for (const category in dataSource) {
+            if (dataSource.hasOwnProperty(category)) {
+                selectedItem = dataSource[category].find(item => item["Jenis Pekerjaan"] === selectedJenisPekerjaan);
+                if (selectedItem) {
+                  console.log("Item ditemukan:", selectedItem); // Debugging
+                  break; // Jika ditemukan, berhenti mencari
+                }
+            }
+        }
+        
+        if (selectedItem) {
+          row.querySelector(".harga-material").value = selectedItem["Harga Material"];
+          row.querySelector(".harga-upah").value = selectedItem["Harga Upah"];
+          row.querySelector(".satuan").value = selectedItem["Satuan"]; // Auto-fill Satuan
+        } else {
+          // Jika tidak ditemukan atau pilihan kosong
+          console.log("Item tidak ditemukan atau pilihan kosong."); // Debugging
+          row.querySelector(".harga-material").value = '';
+          row.querySelector(".harga-upah").value = '';
+          row.querySelector(".satuan").value = 'Ls'; // Reset Satuan ke default atau kosongkan
+        }
+        // Panggil calculateTotalPrice setelah harga terisi (atau dikosongkan)
+        calculateTotalPrice(row.querySelector(".volume")); // Hitung ulang total setelah mengisi harga
+      };
+
+      // Fungsi untuk membuat baris item BOQ baru
+      const createBoQRow = () => {
+        const row = document.createElement("tr");
+        row.classList.add("boq-item-row");
+
+        row.innerHTML = `
+          <td><span class="row-number"></span></td>
+          <td>
+            <select class="jenis-pekerjaan" required>
+              <option value="">-- Pilih Jenis Pekerjaan --</option>
+              <!-- Opsi akan diisi secara dinamis oleh JS -->
+            </select>
+          </td>
+          <td>
+            <select class="satuan" required>
+              <option value="Ls">Ls</option>
+              <option value="M1">M1</option>
+              <option value="M3">M3</option>
+              <option value="Btg">Btg</option>
+              <option value="M2">M2</option>
+              <option value="Bh">Bh</option>
+              <option value="Unit">Unit</option>
+              <option value="Kg">Kg</option>
+              <option value="sel">sel</option>
+              <option value="ttk">ttk</option>
+              <option value="m">m</option>
+            </select>
+          </td>
+          <td>
+            <input type="number" class="volume" value="1.00" min="0" step="0.01" />
+          </td>
+          <td>
+            <input type="number" class="harga-material" min="0" required />
+          </td>
+          <td>
+            <input type="number" class="harga-upah" min="0" required />
+          </td>
+          <td>
+            <input type="text" class="total-material" disabled />
+          </td>
+          <td>
+            <input type="text" class="total-upah" disabled />
+          </td>
+          <td>
+            <input type="text" class="total-harga" disabled />
+          </td>
+          <td>
+            <button type="button" class="delete-row-btn">Hapus</button>
+          </td>
+        `;
+
+        const volumeInput = row.querySelector(".volume");
+        const materialInput = row.querySelector(".harga-material");
+        const upahInput = row.querySelector(".harga-upah");
+        const deleteButton = row.querySelector(".delete-row-btn");
+        const jenisPekerjaanSelect = row.querySelector(".jenis-pekerjaan");
+
+        // Event listener untuk memilih jenis pekerjaan agar harga otomatis terisi
+        jenisPekerjaanSelect.addEventListener("change", () => autoFillPrices(jenisPekerjaanSelect));
+
+        // Event listener untuk input Volume, Harga Material, dan Harga Upah
+        // Memastikan perhitungan total diperbarui secara real-time
+        [volumeInput, materialInput, upahInput].forEach(input => {
+          input.addEventListener("input", () => {
+            calculateTotalPrice(input); // Panggil perhitungan total baris
+            calculateGrandTotal(); // Panggil perhitungan grand total
+          });
+        });
+
+        deleteButton.addEventListener("click", () => {
+          row.remove();
+          updateRowNumbers();
+          calculateGrandTotal();
+        });
+
+        return row;
+      };
+
+      // Fungsi helper untuk mengisi opsi jenis pekerjaan pada baris baru
+      const populateJenisPekerjaanOptionsForNewRow = (rowElement, scope) => {
+          const selectElement = rowElement.querySelector(".jenis-pekerjaan");
+          let categorizedDataSource = {};
+
+          if (scope === "Sipil") {
+            categorizedDataSource = categorizedSipilPrices;
+          } else if (scope === "ME") {
+            categorizedDataSource = categorizedMePrices;
+          }
+
+          selectElement.innerHTML = '<option value="">-- Pilih Jenis Pekerjaan --</option>'; // Bersihkan opsi
+          for (const category in categorizedDataSource) {
+            if (categorizedDataSource.hasOwnProperty(category)) {
+              const optgroup = document.createElement('optgroup');
+              optgroup.label = category;
+              
+              categorizedDataSource[category].forEach(item => {
+                const option = document.createElement("option");
+                option.value = item["Jenis Pekerjaan"];
+                option.textContent = item["Jenis Pekerjaan"];
+                optgroup.appendChild(option);
+              });
+              selectElement.appendChild(optgroup);
+            }
+          }
+      };
+
+      // Fungsi untuk memperbarui nomor baris
+      const updateRowNumbers = () => {
+        const rows = boqTableBody.querySelectorAll(".boq-item-row");
+        rows.forEach((row, index) => {
+          row.querySelector(".row-number").textContent = index + 1;
+        });
+      };
+
+      // Fungsi untuk menghitung total harga untuk satu baris
+      // Dipanggil setiap kali volume, harga material, atau harga upah berubah
+      function calculateTotalPrice(inputElement) {
+        const row = inputElement.closest("tr");
+
+        if (!row) return;
+
+        // Ambil nilai dari input yang relevan
+        const volume = parseFloat(row.querySelector("input.volume").value) || 0;
+        const material = parseFloat(row.querySelector("input.harga-material").value) || 0;
+        const upah = parseFloat(row.querySelector("input.harga-upah").value) || 0;
+
+        console.log(`Calculating for row: Volume=${volume}, Material=${material}, Upah=${upah}`); // Debugging
+
+        const totalMaterial = volume * material;
+        const totalUpah = volume * upah;
+        const totalHarga = totalMaterial + totalUpah;
+
+        // Perbarui input total
+        row.querySelector("input.total-material").value = formatRupiah(totalMaterial);
+        row.querySelector("input.total-upah").value = formatRupiah(totalUpah);
+        row.querySelector("input.total-harga").value = formatRupiah(totalHarga);
+        console.log(`Row Totals: Total Material=${totalMaterial}, Total Upah=${totalUpah}, Total Harga=${totalHarga}`); // Debugging
+      }
+
+      // Fungsi untuk menghitung grand total dari semua baris
+      const calculateGrandTotal = () => {
+        let total = 0;
+        const totalHargaInputs = boqTableBody.querySelectorAll("input.total-harga");
+        totalHargaInputs.forEach(input => {
+          total += parseRupiah(input.value);
+        });
+        grandTotalAmount.textContent = formatRupiah(total);
+        console.log("Grand Total:", total); // Debugging
+      };
+
+      // Event listener untuk perubahan "Lingkup Pekerjaan" (Sipil/ME)
+      // Ini akan memicu pengisian ulang opsi "Jenis Pekerjaan" di semua baris
+      lingkupPekerjaanSelect.addEventListener("change", (event) => {
+          const selectedScope = event.target.value;
+          console.log("Lingkup Pekerjaan diubah menjadi:", selectedScope); // Debugging
+          populateJenisPekerjaanOptions(selectedScope);
+      });
+
+      // Saat halaman pertama kali dimuat
+      window.addEventListener('load', () => {
+        const firstRow = createBoQRow(); // Buat baris pertama
+        boqTableBody.appendChild(firstRow); // Tambahkan ke tabel
+        updateRowNumbers(); // Perbarui nomor urut
+        calculateGrandTotal(); // Hitung grand total awal (seharusnya 0)
+
+        // Jika ada pilihan Lingkup Pekerjaan awal, isi dropdown Jenis Pekerjaan
+        const initialLingkup = lingkupPekerjaanSelect.value;
+        if (initialLingkup) {
+            populateJenisPekerjaanOptions(initialLingkup);
+        }
+      });
+
+      // Event listener untuk tombol "Tambah Item Pekerjaan"
+      addRowButton.addEventListener("click", () => {
+        const newRow = createBoQRow(); // Buat baris baru
+        boqTableBody.appendChild(newRow); // Tambahkan baris ke tabel
+        updateRowNumbers(); // Perbarui nomor urut
+        calculateGrandTotal(); // Hitung ulang grand total
+
+        // Isi opsi Jenis Pekerjaan di baris baru ini
+        const currentLingkup = lingkupPekerjaanSelect.value;
+        if (currentLingkup) {
+            populateJenisPekerjaanOptionsForNewRow(newRow, currentLingkup);
+            // Tidak perlu autoFillPrices di sini karena belum ada pilihan Jenis Pekerjaan di baris baru ini
+        }
+      });
+
+      // Handler pengiriman formulir
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -308,19 +861,36 @@
 
         try {
           const formData = new FormData(this);
-          const formDataObj = {};
-
+          const formDataToSend = {};
           for (let [key, value] of formData.entries()) {
-            formDataObj[key] = value;
+            formDataToSend[key] = value;
           }
 
+          const itemRows = boqTableBody.querySelectorAll(".boq-item-row");
+          itemRows.forEach((row, index) => {
+            const itemNumber = index + 1;
+            formDataToSend[`No_Item_${itemNumber}`] = itemNumber;
+            formDataToSend[`Jenis_Pekerjaan_${itemNumber}`] = row.querySelector('.jenis-pekerjaan').value;
+            formDataToSend[`Satuan_Item_${itemNumber}`] = row.querySelector('.satuan').value;
+            formDataToSend[`Volume_Item_${itemNumber}`] = parseFloat(row.querySelector('.volume').value) || 0;
+            formDataToSend[`Harga_Material_Item_${itemNumber}`] = parseFloat(row.querySelector('.harga-material').value) || 0;
+            formDataToSend[`Harga_Upah_Item_${itemNumber}`] = parseFloat(row.querySelector('.harga-upah').value) || 0;
+            formDataToSend[`Total_Material_Item_${itemNumber}`] = parseRupiah(row.querySelector('.total-material').value);
+            formDataToSend[`Total_Upah_Item_${itemNumber}`] = parseRupiah(row.querySelector('.total-upah').value);
+            formDataToSend[`Total_Harga_Item_${itemNumber}`] = parseRupiah(row.querySelector('.total-harga').value);
+          });
+
+          formDataToSend["Grand_Total"] = parseRupiah(grandTotalAmount.textContent);
+          formDataToSend["Jumlah_Item_Pekerjaan"] = itemRows.length;
+
+          // GANTI DENGAN URL APPS SCRIPT ANDA YANG BENAR!
           const scriptURL =
             "https://script.google.com/macros/s/AKfycbwukv_AyjvIZ9cIuMbfIHYhudObu5tRVXuMhp4J4onECcSHiDszNNH7WEfvCWHoR_2Ohg/exec";
 
           const response = await fetch(scriptURL, {
             redirect: "follow",
             method: "POST",
-            body: JSON.stringify(formDataObj),
+            body: JSON.stringify(formDataToSend),
             headers: {
               "Content-Type": "text/plain;charset=utf-8",
             },
@@ -333,6 +903,10 @@
             messageDiv.style.backgroundColor = "#28a745";
             messageDiv.style.color = "white";
             form.reset();
+            boqTableBody.innerHTML = `<tr><td style="font-weight: bold">I</td><td style="font-weight: bold; text-align: left;" colspan="9">PEKERJAAN PERSIAPAN</td></tr>`;
+            boqTableBody.appendChild(createBoQRow());
+            updateRowNumbers();
+            calculateGrandTotal();
           } else {
             throw new Error(data.message || "Pengiriman data gagal.");
           }
@@ -354,30 +928,11 @@
       resetButton.addEventListener("click", function () {
         form.reset();
         messageDiv.style.display = "none";
+        boqTableBody.innerHTML = `<tr><td style="font-weight: bold">I</td><td style="font-weight: bold; text-align: left;" colspan="9">PEKERJAAN PERSIAPAN</td></tr>`;
+        boqTableBody.appendChild(createBoQRow());
+        updateRowNumbers();
+        calculateGrandTotal();
       });
-
-      function calculateTotalPrice(inputElement) {
-        const row = inputElement.closest("tr");
-
-        if (!row) return;
-
-        const volume = 1.0;
-        const material =
-          parseFloat(row.querySelector("input[name='material']").value) || 0;
-        const upah =
-          parseFloat(row.querySelector("input[name='upah']").value) || 0;
-
-        const totalMaterial = volume * material;
-        const totalUpah = volume * upah;
-        const totalHarga = totalMaterial + totalUpah;
-
-        row.querySelector("input[name='total_material']").value =
-          totalMaterial.toLocaleString("id-ID");
-        row.querySelector("input[name='total_upah']").value =
-          totalUpah.toLocaleString("id-ID");
-        row.querySelector("input[name='total_harga']").value =
-          totalHarga.toLocaleString("id-ID");
-      }
     </script>
   </body>
 </html>
